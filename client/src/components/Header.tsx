@@ -11,6 +11,7 @@ import {
 import { useFinanceStore } from "../lib/store";
 import { useEffect, useState } from "react";
 import { useToast } from "../hooks/use-toast";
+import { Link } from "wouter";
 
 export function Header() {
   const { language, setLanguage } = useLanguageStore();
@@ -58,14 +59,16 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="bg-primary/10 p-2 rounded-xl">
-            <Wallet className="h-6 w-6 text-primary" />
+        <Link to="/">
+          <div className="flex items-center gap-2">
+            <div className="bg-primary/10 p-2 rounded-xl">
+              <Wallet className="h-6 w-6 text-primary" />
+            </div>
+            <span className="text-xl font-bold font-display tracking-tight text-foreground">
+              {t.appName}
+            </span>
           </div>
-          <span className="text-xl font-bold font-display tracking-tight text-foreground">
-            {t.appName}
-          </span>
-        </div>
+        </Link>
 
         <div className="flex items-center gap-2 md:gap-4">
           <DropdownMenu>

@@ -8,9 +8,8 @@
   --font-sans: 'Inter', sans-serif;
   --font-display: 'Outfit', sans-serif;
 
-  /* Light Theme - Clean, Financial, Professional */
-  --background: 210 40% 98%;      /* slate-50 */
-  --foreground: 222 47% 11%;      /* slate-900 */
+  --background: 210 40% 98%;
+  --foreground: 222 47% 11%;
   
   --card: 0 0% 100%;
   --card-foreground: 222 47% 11%;
@@ -18,7 +17,7 @@
   --popover: 0 0% 100%;
   --popover-foreground: 222 47% 11%;
   
-  --primary: 221 83% 53%;         /* blue-600 #2563EB */
+  --primary: 221 83% 53%;
   --primary-foreground: 210 40% 98%;
   
   --secondary: 210 40% 96.1%;
@@ -30,10 +29,10 @@
   --accent: 210 40% 96.1%;
   --accent-foreground: 222 47% 11.2%;
   
-  --destructive: 0 84% 60%;       /* red-600 */
+  --destructive: 0 84% 60%;
   --destructive-foreground: 210 40% 98%;
 
-  --success: 142 71% 45%;         /* green-600 */
+  --success: 142 71% 45%;
   --success-foreground: 210 40% 98%;
 
   --border: 214 32% 91%;
@@ -44,9 +43,8 @@
 }
 
 .dark {
-  /* Dark Theme - Modern, Deep Blue-Grey */
-  --background: 222 47% 11%;      /* slate-950 */
-  --foreground: 210 40% 98%;      /* slate-50 */
+  --background: 222 47% 11%;
+  --foreground: 210 40% 98%;
   
   --card: 222 47% 11%;
   --card-foreground: 210 40% 98%;
@@ -54,7 +52,7 @@
   --popover: 222 47% 11%;
   --popover-foreground: 210 40% 98%;
   
-  --primary: 217 91% 60%;         /* blue-500 */
+  --primary: 217 91% 60%;
   --primary-foreground: 222 47.4% 11.2%;
   
   --secondary: 217 19% 27%;
@@ -111,7 +109,6 @@
   }
 }
 
-/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
