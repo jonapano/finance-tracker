@@ -1,149 +1,91 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { sanityClient } from "./sanity";
 
 export type Language = "en" | "sq";
 
-interface Translation {
-  appName: string;
-  addTransaction: string;
-  editTransaction: string;
-  heroTitle: string;
-  heroSubtitle: string;
-  totalIncome: string;
-  totalExpenses: string;
-  balance: string;
-  date: string;
-  description: string;
-  category: string;
-  amount: string;
-  currency: string;
-  type: string;
-  actions: string;
-  income: string;
-  expense: string;
-  save: string;
-  cancel: string;
-  delete: string;
-  deleteConfirm: string;
-  searchPlaceholder: string;
-  noTransactions: string;
-  categories: {
-    food: string;
-    transport: string;
-    utilities: string;
-    entertainment: string;
-    salary: string;
-    freelance: string;
-    other: string;
-  };
-  filters: {
-    all: string;
-    income: string;
-    expense: string;
-  };
+interface TranslationItem {
+  key: string;
+  en: string;
+  sq: string;
+  group?: string;
 }
-
-export const translations: Record<Language, Translation> = {
-  en: {
-    appName: "FinTrack",
-    addTransaction: "Add Transaction",
-    editTransaction: "Edit Transaction",
-    heroTitle: "Master Your Money",
-    heroSubtitle:
-      "Track every penny, visualize your spending, and take control of your financial future.",
-    totalIncome: "Total Income",
-    totalExpenses: "Total Expenses",
-    balance: "Current Balance",
-    date: "Date",
-    description: "Description",
-    category: "Category",
-    amount: "Amount",
-    currency: "Currency",
-    type: "Type",
-    actions: "Actions",
-    income: "Income",
-    expense: "Expense",
-    save: "Save Transaction",
-    cancel: "Cancel",
-    delete: "Delete",
-    deleteConfirm: "Are you sure you want to delete this transaction?",
-    searchPlaceholder: "Search transactions...",
-    noTransactions: "No transactions yet. Start by adding one!",
-    categories: {
-      food: "Food & Dining",
-      transport: "Transportation",
-      utilities: "Bills & Utilities",
-      entertainment: "Entertainment",
-      salary: "Salary",
-      freelance: "Freelance",
-      other: "Other",
-    },
-    filters: {
-      all: "All Types",
-      income: "Income Only",
-      expense: "Expenses Only",
-    },
-  },
-  sq: {
-    appName: "FinTrack",
-    addTransaction: "Shto Transaksion",
-    editTransaction: "Ndrysho Transaksionin",
-    heroTitle: "Menaxho Paratë Tuaja",
-    heroSubtitle:
-      "Gjurmoni çdo qindarkë, vizualizoni shpenzimet dhe merrni kontrollin e së ardhmes suaj financiare.",
-    totalIncome: "Të Ardhurat",
-    totalExpenses: "Shpenzimet",
-    balance: "Bilanci Aktual",
-    date: "Data",
-    description: "Përshkrimi",
-    category: "Kategoria",
-    amount: "Shuma",
-    currency: "Monedha",
-    type: "Lloji",
-    actions: "Veprime",
-    income: "Të Ardhura",
-    expense: "Shpenzim",
-    save: "Ruaj",
-    cancel: "Anulo",
-    delete: "Fshi",
-    deleteConfirm: "A jeni i sigurt që dëshironi të fshini këtë transaksion?",
-    searchPlaceholder: "Kërko transaksione...",
-    noTransactions: "Ende asnjë transaksion. Filloni duke shtuar një!",
-    categories: {
-      food: "Ushqim",
-      transport: "Transport",
-      utilities: "Fatura & Shërbime",
-      entertainment: "Argëtim",
-      salary: "Rroga",
-      freelance: "Freelance",
-      other: "Tjetër",
-    },
-    filters: {
-      all: "Të Gjitha",
-      income: "Vetëm Të Ardhurat",
-      expense: "Vetëm Shpenzimet",
-    },
-  },
-};
 
 interface LanguageStore {
   language: Language;
+  translations: any;
   setLanguage: (lang: Language) => void;
+  fetchTranslations: () => Promise<void>;
 }
+
+const getLangFromUrl = (): Language => {
+  const params = new URLSearchParams(window.location.search);
+  const lang = params.get("lang");
+  return lang === "sq" ? "sq" : "en";
+};
 
 export const useLanguageStore = create<LanguageStore>()(
   persist(
-    (set) => ({
-      language: "en",
-      setLanguage: (lang) => set({ language: lang }),
+    (set, get) => ({
+      language: getLangFromUrl(),
+      translations: {},
+      setLanguage: (lang) => {
+        const url = new URL(window.location.href);
+        url.searchParams.set("lang", lang);
+        window.history.pushState({}, "", url);
+        set({ language: lang });
+      },
+
+      fetchTranslations: async () => {
+        try {
+          const query = `*[_type == "translation"]{ key, en, sq, group }`;
+          const data = (await (sanityClient.fetch as any)(
+            query,
+          )) as TranslationItem[];
+
+          const formatted: any = {
+            en: { categories: {}, filters: {} },
+            sq: { categories: {}, filters: {} },
+          };
+
+          if (data && Array.isArray(data)) {
+            data.forEach((item: TranslationItem) => {
+              const targetEn = item.en || "";
+              const targetSq = item.sq || "";
+              const group = item.group;
+
+              if (group === "categories") {
+                formatted.en.categories[item.key] = targetEn;
+                formatted.sq.categories[item.key] = targetSq;
+              } else if (group === "filters") {
+                formatted.en.filters[item.key] = targetEn;
+                formatted.sq.filters[item.key] = targetSq;
+              } else {
+                formatted.en[item.key] = targetEn;
+                formatted.sq[item.key] = targetSq;
+              }
+            });
+          }
+
+          console.log("3. Final Formatted Object:", formatted);
+          set({ translations: formatted });
+        } catch (error) {
+          console.error("Sanity fetch error:", error);
+        }
+      },
     }),
     {
       name: "language-storage",
-    }
-  )
+    },
+  ),
 );
 
 export const useTranslation = () => {
-  const language = useLanguageStore((state) => state.language);
+  const { language, translations } = useLanguageStore();
+
+  if (!translations || !translations[language]) {
+    return {};
+  }
+
   return translations[language];
 };

@@ -25,7 +25,7 @@ interface FinanceStore {
   addTransaction: (tx: Transaction) => void;
   updateTransaction: (
     id: number | string,
-    updatedTx: Partial<Transaction>
+    updatedTx: Partial<Transaction>,
   ) => void;
   deleteTransaction: (id: string | number) => void;
 
@@ -34,6 +34,7 @@ interface FinanceStore {
 
   addCategory: (category: Category) => void;
   deleteCategory: (id: string) => void;
+  setCategories: (categories: { id: string; label: string }[]) => void;
 }
 
 export const useFinanceStore = create<FinanceStore>()(
@@ -58,7 +59,7 @@ export const useFinanceStore = create<FinanceStore>()(
       updateTransaction: (id, updatedTx) =>
         set((state) => ({
           transactions: state.transactions.map((t) =>
-            t.id === id ? { ...t, ...updatedTx } : t
+            t.id === id ? { ...t, ...updatedTx } : t,
           ),
         })),
 
@@ -82,7 +83,9 @@ export const useFinanceStore = create<FinanceStore>()(
         set((state) => ({
           categories: state.categories.filter((c) => c.id !== id),
         })),
+      setCategories: (categories) => set({ categories }),
     }),
+
     {
       name: "finance-storage",
       partialize: (state) => ({
@@ -90,6 +93,6 @@ export const useFinanceStore = create<FinanceStore>()(
         baseCurrency: state.baseCurrency,
         categories: state.categories,
       }),
-    }
-  )
+    },
+  ),
 );

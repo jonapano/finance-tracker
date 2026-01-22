@@ -181,10 +181,12 @@ export default function TransactionsPage() {
         <div className="mb-6 flex items-center justify-between">
           <Link to="/">
             <Button variant="ghost" size="sm" className="hover:bg-accent">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Back
+              <ArrowLeft className="mr-2 h-4 w-4" /> {t.back || "Back"}
             </Button>
           </Link>
-          <h1 className="text-3xl font-bold tracking-tight">Transactions</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {t.transactions || "Transactions"}
+          </h1>
         </div>
 
         <div className="grid gap-8 mb-8">
@@ -211,12 +213,16 @@ export default function TransactionsPage() {
               >
                 <SelectTrigger className="bg-background">
                   <SlidersHorizontal className="mr-2 h-4 w-4" />
-                  <SelectValue placeholder="All Types" />
+                  <SelectValue placeholder={t.allTypes || "All Types"} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="income">Income</SelectItem>
-                  <SelectItem value="expense">Expense</SelectItem>
+                  <SelectItem value="all">
+                    {t.filters?.allTypes || "All Types"}
+                  </SelectItem>
+                  <SelectItem value="income">{t.income || "Income"}</SelectItem>
+                  <SelectItem value="expense">
+                    {t.expense || "Expense"}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -225,13 +231,17 @@ export default function TransactionsPage() {
               <Select value={categoryFilter} onValueChange={setCategoryFilter}>
                 <SelectTrigger className="bg-background">
                   <Tag className="mr-2 h-4 w-4" />
-                  <SelectValue placeholder="All Categories" />
+                  <SelectValue
+                    placeholder={t.allCategories || "All Categories"}
+                  />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
+                  <SelectItem value="all">
+                    {t.categories?.allCategories || "All Categories"}
+                  </SelectItem>
                   {categories.map((cat) => (
                     <SelectItem key={cat.id} value={cat.id}>
-                      {cat.label}
+                      {t.categories?.[cat.id] || cat.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -248,10 +258,18 @@ export default function TransactionsPage() {
                   <SelectValue placeholder="Date Range" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Time</SelectItem>
-                  <SelectItem value="this-month">This Month</SelectItem>
-                  <SelectItem value="last-30-days">Last 30 Days</SelectItem>
-                  <SelectItem value="custom">Custom Range</SelectItem>
+                  <SelectItem value="all">
+                    {t.filters?.allTime || "All Time"}
+                  </SelectItem>
+                  <SelectItem value="this-month">
+                    {t.filters?.thisMonth || "This Month"}
+                  </SelectItem>
+                  <SelectItem value="last-30-days">
+                    {t.filters?.last30Days || "Last 30 Days"}
+                  </SelectItem>
+                  <SelectItem value="custom">
+                    {t.filters?.dateRange || "Date Range"}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -272,7 +290,7 @@ export default function TransactionsPage() {
             <div className="flex flex-wrap gap-4 p-4 bg-accent/30 rounded-xl border border-dashed border-primary/20 animate-in fade-in slide-in-from-top-2">
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-medium text-muted-foreground ml-1">
-                  Start Date
+                  {t.filters?.startDate || "Start Date"}
                 </label>
                 <Input
                   type="date"
@@ -283,12 +301,12 @@ export default function TransactionsPage() {
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-medium text-muted-foreground ml-1">
-                  End Date
+                  {t.filters?.endDate || "End Date"}
                 </label>
                 <Input
                   type="date"
                   className="w-40 bg-background"
-                  min={customStart} // Visual browser-level restriction
+                  min={customStart}
                   value={customEnd}
                   onChange={(e) => handleEndChange(e.target.value)}
                 />

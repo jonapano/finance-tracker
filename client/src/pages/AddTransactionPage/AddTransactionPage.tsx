@@ -34,7 +34,7 @@ export default function AddTransactionPage() {
               animate={{ opacity: 1, y: 0 }}
               className="text-4xl md:text-5xl font-extrabold tracking-tight mb-3 font-display"
             >
-              {t.heroTitle}
+              {t.heroTitle || "Master Your Money"}
             </motion.h1>
             <motion.p
               initial={{ opacity: 0 }}
@@ -42,7 +42,7 @@ export default function AddTransactionPage() {
               transition={{ delay: 0.2 }}
               className="text-lg text-muted-foreground"
             >
-              {t.heroSubtitle}
+              {t.heroSubtitle || "Track every penny, visualize your spending and take control of your financial future."}
             </motion.p>
           </div>
 
@@ -70,11 +70,11 @@ export default function AddTransactionPage() {
                     variant="outline"
                     className="text-[10px] uppercase tracking-wider"
                   >
-                    Today
+                    {t.today || "Today"}
                   </Badge>
                 </div>
                 <p className="text-sm text-muted-foreground mb-1">
-                  Spent today ({baseCurrency})
+                  {t.spentToday || "Spent Today"} ({baseCurrency})
                 </p>
                 <h3 className="text-3xl font-bold">
                   {new Intl.NumberFormat(undefined, {
@@ -88,7 +88,7 @@ export default function AddTransactionPage() {
             <section className="space-y-4">
               <h3 className="text-lg font-bold flex items-center gap-2 px-1">
                 <Globe2 className="h-5 w-5 text-muted-foreground" />
-                Live Rates (1 {baseCurrency})
+                {t.liveRates || "Live Rates"} (1 {baseCurrency})
               </h3>
               <div className="grid gap-2">
                 {["USD", "EUR", "ALL", "GBP"]
@@ -113,9 +113,7 @@ export default function AddTransactionPage() {
               <div className="flex items-start gap-3">
                 <Sparkles className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Your conversions are based on real-time mid-market rates.
-                  Always remember to check bank fees if transferring between
-                  currencies!
+                  {t.tip || "Your conversions are based on real-time mid-market rates. Always remember to check bank fees if transferring between currencies!"}
                 </p>
               </div>
             </div>

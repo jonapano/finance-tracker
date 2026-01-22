@@ -27,6 +27,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Transaction } from "../lib/store";
 import { useFinanceStore } from "../lib/store";
 import { useToast } from "../hooks/use-toast";
+import { useTranslation } from "../lib/i18n";
 
 interface TransactionListProps {
   transactions: Transaction[];
@@ -43,32 +44,17 @@ export function TransactionList({
 }: TransactionListProps) {
   const [editingId, setEditingId] = useState<number | null>(null);
   const { toast } = useToast();
+  const t = useTranslation();
 
   const { deleteTransaction, baseCurrency, exchangeRates, categories } =
     useFinanceStore();
 
-  const t = {
-    noTransactions: "No transactions found.",
-    date: "Date",
-    type: "Type",
-    description: "Description",
-    category: "Category",
-    amount: "Amount",
-    eurAmount: "Amount (EUR)",
-    actions: "Actions",
-    income: "Income",
-    expense: "Expense",
-    delete: "Delete Transaction",
-    deleteConfirm:
-      "Are you sure you want to delete this transaction? This action cannot be undone.",
-    cancel: "Cancel",
-  };
-
   const handleDelete = (id: number | string) => {
     deleteTransaction(id);
     toast({
-      title: "Transaction deleted",
-      description: "The record has been permanently removed.",
+      title: t.transactionDeleted || "Transaction deleted",
+      description:
+        t.deleteSuccessMsg || "The record has been permanently removed.",
       variant: "destructive",
     });
   };
@@ -98,7 +84,7 @@ export function TransactionList({
                 onClick={() => onSort("date")}
                 className="font-semibold hover:bg-transparent p-0"
               >
-                {t.date}{" "}
+                {t.date || "Date"}{" "}
                 <ArrowUpDown
                   className={`ml-2 h-3 w-3 ${
                     sortField === "date" ? "opacity-100" : "opacity-40"
@@ -106,9 +92,9 @@ export function TransactionList({
                 />
               </Button>
             </TableHead>
-            <TableHead className="w-[100px]">{t.type}</TableHead>
-            <TableHead>{t.description}</TableHead>
-            <TableHead>{t.category}</TableHead>
+            <TableHead className="w-[100px]">{t.typeLabel || "Type"}</TableHead>
+            <TableHead>{t.descriptionLabel || "Description"}</TableHead>
+            <TableHead>{t.categoryLabel || "Category"}</TableHead>
             <TableHead className="text-right">
               <Button
                 variant="ghost"
@@ -116,7 +102,7 @@ export function TransactionList({
                 onClick={() => onSort("amount")}
                 className="font-semibold hover:bg-transparent p-0"
               >
-                {t.amount}{" "}
+                {t.amountLabel || "Original Amount"}{" "}
                 <ArrowUpDown
                   className={`ml-2 h-3 w-3 ${
                     sortField === "amount" ? "opacity-100" : "opacity-40"
@@ -125,9 +111,11 @@ export function TransactionList({
               </Button>
             </TableHead>
             <TableHead className="text-right text-muted-foreground font-medium">
-              {t.eurAmount}
+              {t.eurAmount || "Amount (EUR)"}
             </TableHead>
-            <TableHead className="w-[100px] text-right">{t.actions}</TableHead>
+            <TableHead className="w-[100px] text-right">
+              {t.actions || "Actions"}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -140,6 +128,7 @@ export function TransactionList({
                 const isDifferentFromBase = tx.currency !== baseCurrency;
 
                 const categoryLabel =
+                  t.categories?.[tx.category] ||
                   categories.find((c) => c.id === tx.category)?.label ||
                   tx.category;
 
@@ -165,7 +154,9 @@ export function TransactionList({
                             : "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400"
                         }
                       >
-                        {tx.type === "income" ? t.income : t.expense}
+                        {tx.type === "income"
+                          ? t.income || "Income"
+                          : t.expense || "Expense"}
                       </Badge>
                     </TableCell>
                     <TableCell className="font-medium text-foreground">
@@ -232,20 +223,23 @@ export function TransactionList({
                           </AlertDialogTrigger>
                           <AlertDialogContent className="rounded-2xl">
                             <AlertDialogHeader>
-                              <AlertDialogTitle>{t.delete}</AlertDialogTitle>
+                              <AlertDialogTitle>
+                                {t.delete || "Delete Transaction"}
+                              </AlertDialogTitle>
                               <AlertDialogDescription>
-                                {t.deleteConfirm}
+                                {t.deleteConfirm ||
+                                  "Are you sure? This cannot be undone."}
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                               <AlertDialogCancel className="rounded-xl">
-                                {t.cancel}
+                                {t.cancel || "Cancel"}
                               </AlertDialogCancel>
                               <AlertDialogAction
                                 onClick={() => handleDelete(tx.id)}
                                 className="bg-destructive hover:bg-destructive/90 text-destructive-foreground rounded-xl"
                               >
-                                {t.delete}
+                                {t.delete || "Delete"}
                               </AlertDialogAction>
                             </AlertDialogFooter>
                           </AlertDialogContent>
@@ -261,7 +255,7 @@ export function TransactionList({
                   colSpan={7}
                   className="h-32 text-center text-muted-foreground"
                 >
-                  {t.noTransactions}
+                  {t.noTransactions || "No transactions found."}
                 </TableCell>
               </TableRow>
             )}

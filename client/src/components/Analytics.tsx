@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { format } from "date-fns";
 import { Transaction } from "../lib/store";
 import { useFinanceStore } from "../lib/store";
+import { useTranslation } from "../lib/i18n";
 
 interface AnalyticsProps {
   transactions: Transaction[];
@@ -32,6 +33,7 @@ const COLORS = [
 
 export function Analytics({ transactions }: AnalyticsProps) {
   const { baseCurrency, exchangeRates } = useFinanceStore();
+  const t = useTranslation();
   const hasData = transactions.length > 0;
 
   const getAmountInBase = (tx: Transaction) => {
@@ -39,17 +41,17 @@ export function Analytics({ transactions }: AnalyticsProps) {
     return Number(tx.amount) / rate;
   };
 
-  // Process data for category pie chart
   const categoryData = transactions
     .filter((t) => t.type === "expense")
     .reduce(
       (acc, curr) => {
         const amountInBase = getAmountInBase(curr);
-        const existing = acc.find((item) => item.name === curr.category);
+        const localizedName = t.categories?.[curr.category] || curr.category;
+        const existing = acc.find((item) => item.name === localizedName);
         if (existing) {
           existing.value += amountInBase;
         } else {
-          acc.push({ name: curr.category, value: amountInBase });
+          acc.push({ name: localizedName, value: amountInBase });
         }
         return acc;
       },
@@ -57,14 +59,12 @@ export function Analytics({ transactions }: AnalyticsProps) {
     )
     .sort((a, b) => b.value - a.value);
 
-  // Process data for monthly income vs expense
   const monthlyData = transactions
     .reduce(
       (acc, curr) => {
         const month = format(new Date(curr.date), "MMM");
         const amountInBase = getAmountInBase(curr);
         const existing = acc.find((item) => item.name === month);
-
         if (existing) {
           if (curr.type === "income") existing.income += amountInBase;
           else existing.expense += amountInBase;
@@ -85,21 +85,25 @@ export function Analytics({ transactions }: AnalyticsProps) {
     <Card className="mb-8 border-border/50 shadow-sm">
       <CardHeader>
         <CardTitle className="text-xl font-bold font-display text-primary">
-          Financial Insights
+          {t.financialInsights || "Financial Insights"}
         </CardTitle>
       </CardHeader>
       <CardContent>
         {!hasData ? (
           <div className="h-[300px] flex flex-col items-center justify-center text-center space-y-2 border-2 border-dashed rounded-xl border-muted">
             <p className="text-muted-foreground font-medium">
-              No financial data yet
+              {t.noData || "No financial data yet"}
             </p>
           </div>
         ) : (
           <Tabs defaultValue="categories" className="w-full">
             <TabsList className="grid w-full max-w-md grid-cols-2 mb-6">
-              <TabsTrigger value="categories">Expenses by Category</TabsTrigger>
-              <TabsTrigger value="trends">Income vs Expenses</TabsTrigger>
+              <TabsTrigger value="categories">
+                {t.expensesByCategory || "Expenses by Category"}
+              </TabsTrigger>
+              <TabsTrigger value="trends">
+                {t.incomeVsExpenses || "Income vs Expenses"}
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent
@@ -181,14 +185,14 @@ export function Analytics({ transactions }: AnalyticsProps) {
                   />
                   <Bar
                     dataKey="income"
-                    name="Income"
+                    name={t.income || "Income"}
                     fill="#16A34A"
                     radius={[4, 4, 0, 0]}
                     maxBarSize={40}
                   />
                   <Bar
                     dataKey="expense"
-                    name="Expenses"
+                    name={t.expense || "Expenses"}
                     fill="#DC2626"
                     radius={[4, 4, 0, 0]}
                     maxBarSize={40}

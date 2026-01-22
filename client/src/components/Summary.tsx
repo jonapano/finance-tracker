@@ -2,6 +2,7 @@ import { Card, CardContent } from "./ui/card";
 import { ArrowUpCircle, ArrowDownCircle, Wallet } from "lucide-react";
 import { motion } from "framer-motion";
 import { Transaction, useFinanceStore } from "../lib/store";
+import { useTranslation } from "../lib/i18n";
 
 interface SummaryProps {
   transactions: Transaction[];
@@ -9,12 +10,7 @@ interface SummaryProps {
 
 export function Summary({ transactions }: SummaryProps) {
   const { baseCurrency, exchangeRates } = useFinanceStore();
-
-  const t = {
-    totalIncome: "Total Income",
-    totalExpenses: "Total Expenses",
-    balance: "Total Balance",
-  };
+  const t = useTranslation();
 
   const getAmountInBase = (tx: Transaction) => {
     const rate = exchangeRates[tx.currency] || 1;
@@ -64,7 +60,7 @@ export function Summary({ transactions }: SummaryProps) {
               </div>
               <div className="overflow-hidden">
                 <p className="text-sm font-medium text-muted-foreground">
-                  {t.totalIncome}
+                  {t.totalIncome || "Total Income"}
                 </p>
                 <h3 className="text-2xl font-bold text-green-700 dark:text-green-400 truncate">
                   +{baseCurrency} {formatValue(totalIncome)}
@@ -84,7 +80,7 @@ export function Summary({ transactions }: SummaryProps) {
               </div>
               <div className="overflow-hidden">
                 <p className="text-sm font-medium text-muted-foreground">
-                  {t.totalExpenses}
+                  {t.totalExpenses || "Total Expenses"}{" "}
                 </p>
                 <h3 className="text-2xl font-bold text-red-700 dark:text-red-400 truncate">
                   -{baseCurrency} {formatValue(totalExpense)}
@@ -104,7 +100,7 @@ export function Summary({ transactions }: SummaryProps) {
               </div>
               <div className="overflow-hidden">
                 <p className="text-sm font-medium text-muted-foreground">
-                  {t.balance}
+                  {t.balance || "Total Balance"}
                 </p>
                 <h3
                   className={`text-2xl font-bold truncate ${

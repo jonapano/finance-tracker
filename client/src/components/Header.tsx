@@ -34,8 +34,8 @@ export function Header() {
 
         if (showToast) {
           toast({
-            title: "Currency Updated",
-            description: `Showing all balances in ${base}`,
+            title: t.currencyUpdated || "Currency Updated",
+            description: `${t.showingBalancesIn || "Showing all balances in"} ${base}`,
           });
         }
       }
@@ -56,16 +56,21 @@ export function Header() {
     fetchRates(newCurr, true);
   };
 
+  // Helper to handle language change and URL sync
+  const handleLanguageChange = (lang: "en" | "sq") => {
+    setLanguage(lang);
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 cursor-pointer">
             <div className="bg-primary/10 p-2 rounded-xl">
               <Wallet className="h-6 w-6 text-primary" />
             </div>
             <span className="text-xl font-bold font-display tracking-tight text-foreground">
-              {t.appName}
+              {t.appName || "FinTrack"}
             </span>
           </div>
         </Link>
@@ -106,16 +111,26 @@ export function Header() {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="w-16">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="min-w-[70px] flex items-center justify-center"
+              >
                 <Globe className="mr-2 h-4 w-4" />
-                {language.toUpperCase()}
+                <span className="font-bold">{language.toUpperCase()}</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setLanguage("en")}>
+              <DropdownMenuItem
+                onClick={() => handleLanguageChange("en")}
+                className={language === "en" ? "bg-accent font-bold" : ""}
+              >
                 English (EN)
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setLanguage("sq")}>
+              <DropdownMenuItem
+                onClick={() => handleLanguageChange("sq")}
+                className={language === "sq" ? "bg-accent font-bold" : ""}
+              >
                 Shqip (SQ)
               </DropdownMenuItem>
             </DropdownMenuContent>
