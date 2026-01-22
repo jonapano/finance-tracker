@@ -38,7 +38,7 @@ import {
 
 type DatePreset = "all" | "this-month" | "last-30-days" | "custom";
 
-const ITEMS_PER_PAGE = 7;
+const ITEMS_PER_PAGE = 6;
 
 export default function TransactionsPage() {
   const t = useTranslation();
@@ -294,7 +294,7 @@ export default function TransactionsPage() {
                 </label>
                 <Input
                   type="date"
-                  className="w-40 bg-background"
+                  className="w-40 bg-background dark:invert-0 [color-scheme:light] dark:[color-scheme:dark]"
                   value={customStart}
                   onChange={(e) => handleStartChange(e.target.value)}
                 />
@@ -305,7 +305,7 @@ export default function TransactionsPage() {
                 </label>
                 <Input
                   type="date"
-                  className="w-40 bg-background"
+                  className="w-40 bg-background dark:invert-0 [color-scheme:light] dark:[color-scheme:dark]"
                   min={customStart}
                   value={customEnd}
                   onChange={(e) => handleEndChange(e.target.value)}

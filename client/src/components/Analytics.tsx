@@ -139,7 +139,7 @@ export function Analytics({ transactions }: AnalyticsProps) {
                     contentStyle={{
                       borderRadius: "12px",
                       border: "none",
-                      backgroundColor: "hsl(var(--card))",
+                      boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                     }}
                   />
                 </PieChart>
@@ -181,6 +181,7 @@ export function Analytics({ transactions }: AnalyticsProps) {
                       borderRadius: "12px",
                       border: "none",
                       backgroundColor: "hsl(var(--card))",
+                      boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                     }}
                   />
                   <Bar
