@@ -56,7 +56,6 @@ export function Header() {
     fetchRates(newCurr, true);
   };
 
-  // Helper to handle language change and URL sync
   const handleLanguageChange = (lang: "en" | "sq") => {
     setLanguage(lang);
   };

@@ -2,7 +2,6 @@ export default {
   name: 'translation',
   title: 'Translations',
   type: 'document',
-  // 1. Define Groups (Tabs)
   groups: [
     {name: 'config', title: 'Configuration'},
     {name: 'content', title: 'Content'},
@@ -12,13 +11,13 @@ export default {
       name: 'key',
       title: 'Key (Unique ID)',
       type: 'string',
-      group: 'config', // 2. Assign to tab
+      group: 'config',
     },
     {
       name: 'group',
       title: 'Group',
       type: 'string',
-      group: 'config', // 2. Assign to tab
+      group: 'config',
       options: {
         list: [
           {title: 'General UI', value: 'none'},
@@ -31,13 +30,13 @@ export default {
       name: 'en',
       title: 'English (EN)',
       type: 'string',
-      group: 'content', // 2. Assign to tab
+      group: 'content',
     },
     {
       name: 'sq',
       title: 'Albanian (SQ)',
       type: 'string',
-      group: 'content', // 2. Assign to tab
+      group: 'content',
     },
   ],
 }

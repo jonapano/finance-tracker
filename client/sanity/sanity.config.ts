@@ -1,5 +1,5 @@
 import {defineConfig} from 'sanity'
-import {structureTool, StructureBuilder} from 'sanity/structure' // 1. Added StructureBuilder import
+import {structureTool, StructureBuilder} from 'sanity/structure'
 import {schemaTypes} from './schemaTypes'
 
 export default defineConfig({
@@ -11,7 +11,6 @@ export default defineConfig({
 
   plugins: [
     structureTool({
-      // 2. Add : StructureBuilder to the S parameter
       structure: (S: StructureBuilder) =>
         S.list()
           .title('Finance Manager CMS')
@@ -37,7 +36,6 @@ export default defineConfig({
                   .title('App Filters')
                   .filter('_type == "translation" && group == "filters"'),
               ),
-            // 3. Add : any (or the specific type) to the listItem parameter
             ...S.documentTypeListItems().filter(
               (listItem: any) => !['translation'].includes(listItem.getId()),
             ),
