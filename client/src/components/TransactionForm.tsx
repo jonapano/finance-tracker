@@ -75,7 +75,6 @@ export function TransactionForm({
 
   const { toast } = useToast();
   const [isPending, setIsPending] = useState(false);
-  const [deletingCatId, setDeletingCatId] = useState<string | null>(null);
 
   const {
     categories,
